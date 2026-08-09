@@ -19,6 +19,8 @@ export interface Restaurant {
   image?: string;
   /** Optional photo gallery; the first image doubles as the cover if `image` is unset. */
   images?: string[];
+  /** Attribution shown under the photo when it comes from a third party. */
+  imageCredit?: ImageCredit;
   /** Short "don't miss" bullets (signature dishes, tips) shown in the popup. */
   highlights?: string[];
   priceRange?: PriceRange;
@@ -26,6 +28,17 @@ export interface Restaurant {
 }
 
 export type PriceRange = '$' | '$$' | '$$$' | '$$$$';
+
+/**
+ * Attribution for a third-party photo. Required by the Creative Commons
+ * licences the Wikimedia Commons images are published under.
+ */
+export interface ImageCredit {
+  author: string;
+  license: string;
+  licenseUrl: string;
+  sourceUrl: string;
+}
 
 export const priceRangeSchema = z.enum(['$', '$$', '$$$', '$$$$']);
 
@@ -46,6 +59,14 @@ export const restaurantSchema = z.object({
   tags: z.array(z.string()).optional(),
   image: z.string().optional(),
   images: z.array(z.string()).optional(),
+  imageCredit: z
+    .object({
+      author: z.string().min(1),
+      license: z.string().min(1),
+      licenseUrl: z.string().url(),
+      sourceUrl: z.string().url(),
+    })
+    .optional(),
   highlights: z.array(z.string()).optional(),
   priceRange: priceRangeSchema.optional(),
   neighbourhood: z.string().optional(),

@@ -46,6 +46,7 @@ account, no API keys, and no usage costs.
 ## Features
 
 ### 🗺️ The map
+
 - **Immersive 3D basemap** — extruded buildings with height‑based shading and a subtle atmospheric sky,
   rendered from OpenStreetMap vector data.
 - **2D / 3D toggle** — flip between a pitched 3D city and a flat, Google‑Maps‑style 2D street map
@@ -57,6 +58,7 @@ account, no API keys, and no usage costs.
   the same place always re‑centers.
 
 ### 🍽️ The food diary
+
 - **Custom floating markers** — bespoke pins that float, pulse, glow and scale on hover (never default map pins).
 - **Glassmorphic detail popup** — a blurred, rounded card (a bottom sheet on mobile) with the photo, my
   review link, description, rating, visit date, and tags.
@@ -65,13 +67,16 @@ account, no API keys, and no usage costs.
 - **About panel** — a tap on the logo explains whose map this is and what it's for.
 
 ### 🎛️ Power tools
+
 - **Filters** — by cuisine and tag, plus a favourites‑only view.
 - **Favourites** — starred places, persisted locally.
 - **Statistics** — total visited, average rating, distinct cuisines, and a top‑cuisines breakdown.
-- **Import / export** — back up or restore the full list as JSON, validated with Zod on import.
+- **Add / edit / delete places** in the app — set a location by clicking the map, validated with Zod,
+  and persisted locally so changes survive a reload.
 - **Dark / light theme** — dark by default, with a smooth toggle (persisted, no flash on load).
 
 ### ♿ Built right
+
 - **Responsive** — desktop‑first, with graceful tablet and mobile layouts (drawers and bottom sheets).
 - **Accessible** — keyboard navigation, visible focus rings, ARIA labelling, and Escape‑to‑close everywhere.
 - **Performant** — lazy‑loaded map, memoized selectors, diffed markers, and minimized re‑renders.
@@ -82,9 +87,9 @@ account, no API keys, and no usage costs.
 
 > Capture the views below into `docs/screenshots/` and embed them here.
 
-| 3D · Dark (default) | 2D · Light (Google‑Maps style) | Restaurant popup | Mobile |
-| :---: | :---: | :---: | :---: |
-| Pitched skyline with extruded buildings | Flat top‑down street map | Glassmorphic review card | Drawer + bottom sheet |
+|           3D · Dark (default)           | 2D · Light (Google‑Maps style) |     Restaurant popup     |        Mobile         |
+| :-------------------------------------: | :----------------------------: | :----------------------: | :-------------------: |
+| Pitched skyline with extruded buildings |    Flat top‑down street map    | Glassmorphic review card | Drawer + bottom sheet |
 
 <!--
 <p align="center">
@@ -97,19 +102,19 @@ account, no API keys, and no usage costs.
 
 ## Tech Stack
 
-| Area | Choice |
-| --- | --- |
-| Framework | [Next.js 15](https://nextjs.org/) (App Router) · [React 19](https://react.dev/) |
-| Language | [TypeScript](https://www.typescriptlang.org/) — `strict`, zero `any` |
-| Mapping | [MapLibre GL JS](https://maplibre.org/) + free [OpenFreeMap](https://openfreemap.org/) vector tiles (3D building extrusion) |
-| Styling | [Tailwind CSS](https://tailwindcss.com/) · [shadcn/ui](https://ui.shadcn.com/) · [Radix UI](https://www.radix-ui.com/) |
-| State | [Zustand](https://zustand-demo.pmnd.rs/) (with `persist`) |
-| Animation | [Framer Motion](https://www.framer.com/motion/) |
-| Validation | [Zod](https://zod.dev/) |
-| Icons | [Lucide](https://lucide.dev/) |
-| Tooling | [ESLint](https://eslint.org/) · [Prettier](https://prettier.io/) |
-| Package manager | [npm](https://www.npmjs.com/) |
-| Deployment | [Vercel](https://vercel.com/) |
+| Area            | Choice                                                                                                                      |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Framework       | [Next.js 15](https://nextjs.org/) (App Router) · [React 19](https://react.dev/)                                             |
+| Language        | [TypeScript](https://www.typescriptlang.org/) — `strict`, zero `any`                                                        |
+| Mapping         | [MapLibre GL JS](https://maplibre.org/) + free [OpenFreeMap](https://openfreemap.org/) vector tiles (3D building extrusion) |
+| Styling         | [Tailwind CSS](https://tailwindcss.com/) · [shadcn/ui](https://ui.shadcn.com/) · [Radix UI](https://www.radix-ui.com/)      |
+| State           | [Zustand](https://zustand-demo.pmnd.rs/) (with `persist`)                                                                   |
+| Animation       | [Framer Motion](https://www.framer.com/motion/)                                                                             |
+| Validation      | [Zod](https://zod.dev/)                                                                                                     |
+| Icons           | [Lucide](https://lucide.dev/)                                                                                               |
+| Tooling         | [ESLint](https://eslint.org/) · [Prettier](https://prettier.io/)                                                            |
+| Package manager | [npm](https://www.npmjs.com/)                                                                                               |
+| Deployment      | [Vercel](https://vercel.com/)                                                                                               |
 
 ---
 
@@ -214,14 +219,14 @@ npm run dev        # start the dev server → http://localhost:3000
 
 ### Scripts
 
-| Script | Description |
-| --- | --- |
-| `npm run dev` | Start the development server |
-| `npm run build` | Create an optimized production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format the codebase with Prettier |
-| `npm run format:check` | Check formatting without writing |
+| Script                 | Description                          |
+| ---------------------- | ------------------------------------ |
+| `npm run dev`          | Start the development server         |
+| `npm run build`        | Create an optimized production build |
+| `npm run start`        | Serve the production build           |
+| `npm run lint`         | Run ESLint                           |
+| `npm run format`       | Format the codebase with Prettier    |
+| `npm run format:check` | Check formatting without writing     |
 
 ---
 
@@ -229,7 +234,7 @@ npm run dev        # start the dev server → http://localhost:3000
 
 The basemap is rendered by **MapLibre GL JS** over **OpenFreeMap** vector tiles, which serve the full
 planet of OpenStreetMap data for free with **no API key and no signup**. Map "quality" here is driven by
-the *style*, not the tile source, so the app ships four hand‑tuned styles (dark/light × 2D/3D) defined in
+the _style_, not the tile source, so the app ships four hand‑tuned styles (dark/light × 2D/3D) defined in
 [`lib/mapStyle.ts`](lib/mapStyle.ts):
 
 - **3D** — pitched camera with height‑tiered building extrusion, road hierarchy, labels, and an
@@ -265,10 +270,22 @@ sidebar, carousel, markers, and statistics all update automatically.
 }
 ```
 
-Prefer no code? Use the **Import / Export** buttons in the toolbar to download the current list as JSON,
-edit it, and re‑import (validated with Zod). Coordinates are easiest to grab by right‑clicking a spot in
-Google Maps and copying the `lat, lng` pair. See the type definition in
+Prefer no code? Use the **＋ Add** button in the app — it has the same fields, sets the location by
+letting you click the map, and saves to your browser. See the type definition in
 [`types/restaurant.ts`](types/restaurant.ts).
+
+> **Importing from Google Maps.** The list in `data/restaurants.ts` is generated from a
+> [Google Takeout](https://takeout.google.com) export (**Maps (your places)** → `Reviews.json`) by
+> [`scripts/import-google-takeout.mjs`](scripts/import-google-takeout.mjs). Re‑run it any time to pull
+> in new reviews:
+>
+> ```bash
+> node scripts/import-google-takeout.mjs "/path/to/Reviews.json"
+> ```
+>
+> It keeps Toronto food & drink places, maps star ratings, review text, prices, and meal‑type tags,
+> and derives cuisine and neighbourhood. After regenerating, bump `SEED_VERSION` in
+> [`store/useAppStore.ts`](store/useAppStore.ts) so browsers holding an older copy pick up the new data.
 
 ---
 

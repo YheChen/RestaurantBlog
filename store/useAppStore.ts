@@ -41,11 +41,9 @@ interface AppState {
   mapMode: MapMode;
 
   // Data actions
-  setRestaurants: (restaurants: Restaurant[]) => void;
   addRestaurant: (restaurant: Restaurant) => void;
   updateRestaurant: (restaurant: Restaurant) => void;
   removeRestaurant: (id: string) => void;
-  resetRestaurants: () => void;
 
   // Map / selection
   setMap: (map: MapLibreMap | null) => void;
@@ -93,18 +91,12 @@ function toggleInArray(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
 }
 
-/** Drops favourites / selection that no longer exist in a new dataset. */
-function reconcile(restaurants: Restaurant[], favorites: string[], selectedId: string | null) {
-  const ids = new Set(restaurants.map((restaurant) => restaurant.id));
-  return {
-    restaurants,
-    favorites: favorites.filter((id) => ids.has(id)),
-    selectedId: selectedId && ids.has(selectedId) ? selectedId : null,
-    activeCuisines: [] as string[],
-    activeTags: [] as string[],
-    searchQuery: '',
-  };
-}
+/**
+ * Bump whenever `data/restaurants.ts` changes. There is no in-app reset, so this
+ * is what lets a browser holding an older persisted copy pick up the new seed:
+ * a version mismatch replaces the stored list (see `migrate` below).
+ */
+const SEED_VERSION = 3;
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -130,8 +122,6 @@ export const useAppStore = create<AppState>()(
       theme: 'dark',
       mapMode: '3d',
 
-      setRestaurants: (restaurants) =>
-        set((state) => reconcile(restaurants, state.favorites, state.selectedId)),
 
       addRestaurant: (restaurant) =>
         set((state) => {
@@ -172,9 +162,6 @@ export const useAppStore = create<AppState>()(
           editingId: state.editingId === id ? null : state.editingId,
         })),
 
-      resetRestaurants: () =>
-        set((state) => reconcile(initialRestaurants, state.favorites, state.selectedId)),
-
       setMap: (map) => set({ map }),
       setMapLoaded: (mapLoaded) => set({ mapLoaded }),
       selectRestaurant: (selectedId) =>
@@ -213,11 +200,12 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'toronto-eats-store',
+      version: SEED_VERSION,
       storage: createJSONStorage(() =>
         typeof window !== 'undefined' ? window.localStorage : noopStorage,
       ),
-      // The restaurant list is persisted so manual additions and imports survive
-      // reloads; the user becomes the owner of their list (reset restores seed data).
+      // The restaurant list is persisted so places added or edited in the app
+      // survive reloads.
       partialize: (state) => ({
         restaurants: state.restaurants,
         favorites: state.favorites,
@@ -226,6 +214,17 @@ export const useAppStore = create<AppState>()(
         mapMode: state.mapMode,
         sortBy: state.sortBy,
       }),
+      // Runs only when the stored version differs from SEED_VERSION: adopt the
+      // new seed list and drop favourites pointing at places that no longer exist.
+      migrate: (persisted) => {
+        const previous = (persisted ?? {}) as Partial<AppState>;
+        const ids = new Set(initialRestaurants.map((restaurant) => restaurant.id));
+        return {
+          ...previous,
+          restaurants: initialRestaurants,
+          favorites: (previous.favorites ?? []).filter((id) => ids.has(id)),
+        } as AppState;
+      },
     },
   ),
 );

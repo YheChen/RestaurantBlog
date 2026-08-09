@@ -4,7 +4,6 @@ import { Separator } from '@/components/ui/separator';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 import { FilterPopover } from './FilterPopover';
-import { ImportExport } from './ImportExport';
 import { MapModeToggle } from './MapModeToggle';
 import { StatsPopover } from './StatsPopover';
 import { ThemeToggle } from './ThemeToggle';
@@ -15,7 +14,6 @@ export function ControlsToolbar() {
       <div className="glass-panel flex items-center gap-1 rounded-2xl p-1.5 shadow-lg">
         <FilterPopover />
         <StatsPopover />
-        <ImportExport />
         <Separator orientation="vertical" className="h-6" />
         <MapModeToggle />
         <Separator orientation="vertical" className="h-6" />
