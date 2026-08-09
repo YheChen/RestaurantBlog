@@ -89,9 +89,7 @@ export function StatsPopover() {
                 key={item.label}
                 className="rounded-xl border border-border bg-muted/30 px-3 py-2.5"
               >
-                <div className="text-2xl font-semibold tabular-nums leading-none">
-                  {item.value}
-                </div>
+                <div className="text-2xl font-semibold tabular-nums leading-none">{item.value}</div>
                 <div className="mt-1 text-xs text-muted-foreground">{item.label}</div>
               </div>
             ))}

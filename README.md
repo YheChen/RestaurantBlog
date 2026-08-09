@@ -227,6 +227,48 @@ npm run dev        # start the dev server → http://localhost:3000
 | `npm run lint`         | Run ESLint                           |
 | `npm run format`       | Format the codebase with Prettier    |
 | `npm run format:check` | Check formatting without writing     |
+| `npm run typecheck`    | Type-check without emitting          |
+| `npm run photos`       | Download stock photos into `public/` |
+
+---
+
+## Photos
+
+Every restaurant card shows an image, from one of three sources, tried in this order:
+
+1. **A real photo of the place** on the restaurant record (`image` / `images`). Five of the 74 use
+   freely-licensed Wikimedia Commons shots of the actual storefronts.
+2. **A photo of the dish the place is known for**, from
+   [`data/dish-photos.ts`](data/dish-photos.ts). Each restaurant is mapped to a dish drawn from its own
+   review text — Bun Saigon gets pho, Mother's Dumplings gets dumplings, Tim Hortons gets coffee and
+   donuts, the Blue Chip truck gets poutine. The other 69 places resolve at this level.
+3. **A cuisine photo** from [`data/cuisine-photos.ts`](data/cuisine-photos.ts), then a generic one.
+   Nothing currently falls this far; they exist so a newly added place still gets something sensible
+   before anyone writes a dish mapping for it.
+
+Within a set, the photo is chosen by hashing the restaurant id, so a given place always gets the same
+image and adjacent cards do not repeat — 49 distinct photos across the 69. Anything from levels 2 or 3
+is badged **Stock photo** in the detail popup, because it is not the restaurant itself. Whatever the
+source, the photo credit and licence are shown beneath it.
+
+The resolution logic lives in [`lib/restaurant-images.ts`](lib/restaurant-images.ts), so the UI never
+has to handle a missing image.
+
+### Self-hosting the stock photos
+
+```bash
+npm run photos
+```
+
+Downloads roughly 120 Unsplash photos into `public/photos/cuisine/` and writes
+`data/cuisine-photos-local.json`. That manifest is the only thing deciding local versus remote: with it
+the site serves the photos itself, without it they load from Unsplash, so a fresh clone works with no
+setup. Delete it to go back to hotlinking. No API key or account is needed; the
+[Unsplash Licence](https://unsplash.com/license) permits redistributing the photos as part of your own
+work.
+
+Adding a real photo for a place is just a matter of setting `image` and `imageCredit` on its record in
+[`data/restaurants.ts`](data/restaurants.ts). It will immediately outrank the stock one.
 
 ---
 

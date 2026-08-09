@@ -69,8 +69,8 @@ export function Brand() {
           </DialogHeader>
 
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Every glowing pin is somewhere I&apos;ve been. Tap one to read my own review, rating, and
-            notes — then wander the city in 3D, or flip to a flat 2D map.
+            Every glowing pin is somewhere I&apos;ve been. Tap one to read my own review, rating,
+            and notes — then wander the city in 3D, or flip to a flat 2D map.
           </p>
 
           <div className="mt-1 flex items-center gap-4 rounded-xl border border-border bg-muted/30 px-4 py-3">

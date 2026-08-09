@@ -20,8 +20,7 @@ export function FilterPopover() {
   const setShowFavoritesOnly = useAppStore((s) => s.setShowFavoritesOnly);
   const clearFilters = useAppStore((s) => s.clearFilters);
 
-  const hasActiveFilters =
-    activeCuisines.length > 0 || activeTags.length > 0 || showFavoritesOnly;
+  const hasActiveFilters = activeCuisines.length > 0 || activeTags.length > 0 || showFavoritesOnly;
 
   return (
     <Popover>
@@ -63,10 +62,7 @@ export function FilterPopover() {
             >
               <span className="flex items-center gap-2 font-medium">
                 <Heart
-                  className={cn(
-                    'size-4',
-                    showFavoritesOnly && 'fill-primary text-primary',
-                  )}
+                  className={cn('size-4', showFavoritesOnly && 'fill-primary text-primary')}
                   aria-hidden="true"
                 />
                 Favorites only

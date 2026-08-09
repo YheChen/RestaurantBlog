@@ -104,11 +104,7 @@ export function SearchBar({ className }: { className?: string }) {
   }
 
   return (
-    <div
-      ref={wrapperRef}
-      onBlur={handleBlur}
-      className={cn('relative w-full', className)}
-    >
+    <div ref={wrapperRef} onBlur={handleBlur} className={cn('relative w-full', className)}>
       <div
         className={cn(
           'glass-panel flex items-center gap-2 rounded-full px-4 py-2 shadow-lg transition-shadow',
@@ -209,9 +205,7 @@ export function SearchBar({ className }: { className?: string }) {
                         <p className="truncate text-sm font-medium text-foreground">
                           {restaurant.name}
                         </p>
-                        {meta && (
-                          <p className="truncate text-xs text-muted-foreground">{meta}</p>
-                        )}
+                        {meta && <p className="truncate text-xs text-muted-foreground">{meta}</p>}
                       </div>
                       <RatingStars
                         rating={restaurant.rating}

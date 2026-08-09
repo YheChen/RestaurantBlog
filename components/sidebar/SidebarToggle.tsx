@@ -4,11 +4,7 @@ import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useFilteredRestaurants } from '@/hooks/useFilteredRestaurants';
 import { useAppStore } from '@/store/useAppStore';
 
@@ -43,9 +39,7 @@ export function SidebarToggle() {
           )}
         </div>
       </TooltipTrigger>
-      <TooltipContent side="bottom">
-        {sidebarOpen ? 'Hide places' : 'Show places'}
-      </TooltipContent>
+      <TooltipContent side="bottom">{sidebarOpen ? 'Hide places' : 'Show places'}</TooltipContent>
     </Tooltip>
   );
 }

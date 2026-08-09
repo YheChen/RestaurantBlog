@@ -1,9 +1,5 @@
 export type { Restaurant, PriceRange, ImageCredit, RestaurantInput } from './restaurant';
-export {
-  restaurantSchema,
-  restaurantArraySchema,
-  priceRangeSchema,
-} from './restaurant';
+export { restaurantSchema, restaurantArraySchema, priceRangeSchema } from './restaurant';
 
 export type Theme = 'dark' | 'light';
 
