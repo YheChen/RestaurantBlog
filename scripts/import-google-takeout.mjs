@@ -50,6 +50,10 @@ const CUISINE_RULES = [
   [/bbq chicken|fried chicken|monga/i, 'Fried Chicken'],
   [/bingz/i, 'Chinese'],
   [/kingyo|shoten|ohiru/i, 'Japanese'],
+  // Name-specific overrides confirmed by Chen.
+  [/baroness/i, 'Café'],
+  [/good brothers/i, 'Chinese'],
+  [/mailo/i, 'Italian'],
   [/anh dao|saigon|pho|phở|banh|bánh|viet/i, 'Vietnamese'],
   [/thai/i, 'Thai'],
   [/sushi|ramen|izakaya|yakitori|japan|gyoza|omakase/i, 'Japanese'],
@@ -70,6 +74,78 @@ const CUISINE_RULES = [
   // Any CJK characters left → very likely a Chinese spot in this dataset.
   [/[一-鿿]/, 'Chinese'],
 ];
+
+const CC_BY_SA_4 = {
+  license: 'CC BY-SA 4.0',
+  licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+};
+const CC_BY_2 = {
+  license: 'CC BY 2.0',
+  licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
+};
+
+/**
+ * Freely-licensed photographs from Wikimedia Commons, keyed by generated id.
+ * Google's export carries no photos, so these are the handful of venues that
+ * happen to have an openly-licensed picture. Every entry must keep its
+ * attribution — the CC licences require visible credit.
+ *
+ * Note: Commons' thumbnailer 400s on the `800px-` bucket for these files;
+ * `960px-` is verified to serve.
+ */
+const PHOTOS = {
+  'house-of-gourmet': {
+    image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/House_of_Gourmet_Seafood%2C_BBQ%2C_Noodle_Restaurant_in_Toronto_Chinatown.jpg/960px-House_of_Gourmet_Seafood%2C_BBQ%2C_Noodle_Restaurant_in_Toronto_Chinatown.jpg',
+    credit: {
+      author: 'atallasianguy',
+      ...CC_BY_SA_4,
+      sourceUrl:
+        'https://commons.wikimedia.org/wiki/File:House_of_Gourmet_Seafood,_BBQ,_Noodle_Restaurant_in_Toronto_Chinatown.jpg',
+    },
+  },
+  'banh-mi-nguyen-huong': {
+    image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Chinatown_in_Toronto%2C_October_11_2025_%2802%29.jpg/960px-Chinatown_in_Toronto%2C_October_11_2025_%2802%29.jpg',
+    credit: {
+      author: 'Dillan Payne',
+      ...CC_BY_SA_4,
+      sourceUrl:
+        'https://commons.wikimedia.org/wiki/File:Chinatown_in_Toronto,_October_11_2025_(02).jpg',
+    },
+  },
+  'juicy-dumpling': {
+    image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Juicy_Dumpling_on_Dundas_in_Toronto%2C_October_11_2025.jpg/960px-Juicy_Dumpling_on_Dundas_in_Toronto%2C_October_11_2025.jpg',
+    credit: {
+      author: 'Dillan Payne',
+      ...CC_BY_SA_4,
+      sourceUrl:
+        'https://commons.wikimedia.org/wiki/File:Juicy_Dumpling_on_Dundas_in_Toronto,_October_11_2025.jpg',
+    },
+  },
+  'smoke-s-poutinerie-spadina': {
+    image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Smoke%27s_Poutinerie_Spadina_and_College_2022.jpg/960px-Smoke%27s_Poutinerie_Spadina_and_College_2022.jpg',
+    credit: {
+      author: 'Xander Wu',
+      ...CC_BY_SA_4,
+      sourceUrl:
+        "https://commons.wikimedia.org/wiki/File:Smoke's_Poutinerie_Spadina_and_College_2022.jpg",
+    },
+  },
+  'the-burgernator': {
+    // Already 662x1000, so the original is served directly.
+    image:
+      'https://upload.wikimedia.org/wikipedia/commons/2/28/The_Burgernator_in_Toronto%27s_Kensington_Market_%289027087953%29.jpg',
+    credit: {
+      author: 'Jason Baker',
+      ...CC_BY_2,
+      sourceUrl:
+        "https://commons.wikimedia.org/wiki/File:The_Burgernator_in_Toronto's_Kensington_Market_(9027087953).jpg",
+    },
+  },
+};
 
 function guessCuisine(name) {
   for (const [pattern, cuisine] of CUISINE_RULES) {
@@ -103,6 +179,54 @@ function streetOf(address) {
     .replace(/^[\d\s-]+/, '')
     .replace(/\.+$/, '')
     .trim();
+}
+
+/**
+ * Derives a Toronto neighbourhood from a street address. Google's export has no
+ * neighbourhood field, but the addresses are precise enough to place each spot:
+ * rules are `[street matcher, [minNumber, maxNumber] | null, neighbourhood]`,
+ * first match wins. Ranges follow the usual downtown boundaries (Spadina splits
+ * the College strip; Bathurst is Kensington's western edge; etc.).
+ */
+const NEIGHBOURHOOD_RULES = [
+  [/spadina/, [250, 445], 'Chinatown'],
+  [/spadina/, [446, 600], 'University of Toronto'],
+  [/dundas/, [400, 560], 'Chinatown'],
+  [/dundas/, [1, 399], 'Downtown Yonge'],
+  [/college/, [1, 199], 'Discovery District'],
+  [/college/, [200, 295], 'University of Toronto'],
+  [/college/, [296, 420], 'Kensington Market'],
+  [/kensington|augusta/, null, 'Kensington Market'],
+  [/baldwin/, null, 'Baldwin Village'],
+  [/harbord/, null, 'Harbord Village'],
+  [/huron|st george|saint george/, null, 'University of Toronto'],
+  [/university ave/, null, 'Discovery District'],
+  [/mccaul/, null, 'Grange Park'],
+  [/bloor/, [1, 400], 'The Annex'],
+  [/bloor/, [401, 900], 'Koreatown'],
+  [/yonge/, [1, 400], 'Downtown Yonge'],
+  [/yonge/, [401, 900], 'Yonge & Bloor'],
+  [/elm st/, null, 'Downtown Yonge'],
+  [/wellesley/, null, 'Church-Wellesley'],
+  [/winchester/, null, 'Cabbagetown'],
+  [/bay st/, null, 'Bay Street Corridor'],
+  [/queen st w|queen street w/, null, 'Queen West'],
+  [/front st w|front street w/, null, 'CityPlace'],
+  [/bremner/, null, 'Entertainment District'],
+  [/eglinton/, null, 'Yonge & Eglinton'],
+];
+
+function deriveNeighbourhood(address) {
+  const first = (address ?? '').split(',')[0] ?? '';
+  // Handles "478Dundas Street West" (missing space) and "455 A Spadina Ave.".
+  const number = Number((first.match(/\d+/) ?? [])[0]);
+  const street = strip(first).replace(/[^a-z ]+/g, ' ');
+  for (const [matcher, range, neighbourhood] of NEIGHBOURHOOD_RULES) {
+    if (!matcher.test(street)) continue;
+    if (range && (!Number.isFinite(number) || number < range[0] || number > range[1])) continue;
+    return neighbourhood;
+  }
+  return undefined;
 }
 
 const raw = JSON.parse(fs.readFileSync(INPUT, 'utf8'));
@@ -153,6 +277,7 @@ for (const feature of features) {
     visitDate: (p.date ?? '').slice(0, 10) || undefined,
     tags: tags.length > 0 ? tags : undefined,
     priceRange: mapPrice(q('Price per person')?.selected_option),
+    neighbourhood: deriveNeighbourhood(loc.address),
     address: loc.address ?? '',
   });
 }
@@ -181,6 +306,19 @@ for (const place of kept) {
   }
   taken.add(id);
   place.id = id;
+
+  const photo = PHOTOS[id];
+  if (photo) {
+    place.image = photo.image;
+    place.imageCredit = photo.credit;
+  }
+}
+
+const photographed = kept.filter((place) => place.image).length;
+if (photographed !== Object.keys(PHOTOS).length) {
+  console.warn(
+    `WARNING: ${Object.keys(PHOTOS).length} photos defined but ${photographed} matched — an id in PHOTOS may be stale.`,
+  );
 }
 
 const entries = kept.map((place) => {
@@ -192,10 +330,16 @@ const entries = kept.map((place) => {
     `    reviewUrl: ${JSON.stringify(place.reviewUrl)},`,
     `    cuisine: ${JSON.stringify(place.cuisine)},`,
   ];
+  if (place.neighbourhood)
+    fields.push(`    neighbourhood: ${JSON.stringify(place.neighbourhood)},`);
   if (place.priceRange) fields.push(`    priceRange: ${JSON.stringify(place.priceRange)},`);
   if (typeof place.rating === 'number') fields.push(`    rating: ${place.rating},`);
   if (place.visitDate) fields.push(`    visitDate: ${JSON.stringify(place.visitDate)},`);
   if (place.tags) fields.push(`    tags: ${JSON.stringify(place.tags)},`);
+  if (place.image) fields.push(`    image: ${JSON.stringify(place.image)},`);
+  if (place.imageCredit) {
+    fields.push(`    imageCredit: ${JSON.stringify(place.imageCredit)},`);
+  }
   fields.push(`    description: ${JSON.stringify(place.description)},`);
   return `  {\n${fields.join('\n')}\n  },`;
 });
@@ -237,3 +381,20 @@ console.log(
     .map(([cuisine, count]) => `${cuisine} ${count}`)
     .join(', '),
 );
+
+const byHood = new Map();
+for (const place of kept) {
+  const key = place.neighbourhood ?? '(none)';
+  byHood.set(key, (byHood.get(key) ?? 0) + 1);
+}
+console.log(
+  'Neighbourhoods:',
+  [...byHood.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([hood, count]) => `${hood} ${count}`)
+    .join(', '),
+);
+const missing = kept.filter((place) => !place.neighbourhood);
+if (missing.length > 0) {
+  console.log('NO NEIGHBOURHOOD:', missing.map((m) => `${m.name} @ ${m.address}`).join(' | '));
+}

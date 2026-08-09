@@ -48,6 +48,29 @@ function Gallery({ restaurant }: { restaurant: Restaurant }) {
         />
         <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10" />
       </div>
+      {restaurant.imageCredit && (
+        <p className="px-0.5 text-[10px] leading-snug text-muted-foreground/80">
+          Photo:{' '}
+          <a
+            href={restaurant.imageCredit.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            {restaurant.imageCredit.author}
+          </a>{' '}
+          ·{' '}
+          <a
+            href={restaurant.imageCredit.licenseUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            {restaurant.imageCredit.license}
+          </a>{' '}
+          via Wikimedia Commons
+        </p>
+      )}
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1">
           {images.map((src, index) => (
@@ -61,7 +84,7 @@ function Gallery({ restaurant }: { restaurant: Restaurant }) {
                 'relative h-12 w-16 shrink-0 overflow-hidden rounded-lg ring-1 ring-inset transition',
                 index === active
                   ? 'ring-2 ring-primary'
-                  : 'ring-border opacity-70 hover:opacity-100',
+                  : 'opacity-70 ring-border hover:opacity-100',
               )}
             >
               <RestaurantImage src={src} alt="" className="h-full w-full" sizes="64px" />
@@ -95,7 +118,10 @@ function PopupBody({ restaurant, isFavorite, onToggleFavorite, onClose }: PopupB
 
   const visited = formatVisitDate(restaurant.visitDate);
   const subtitle = [restaurant.cuisine, restaurant.neighbourhood].filter(Boolean) as string[];
-  const paragraphs = restaurant.description.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+  const paragraphs = restaurant.description
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean);
 
   function handleShare() {
     if (typeof window === 'undefined') return;
@@ -169,7 +195,10 @@ function PopupBody({ restaurant, isFavorite, onToggleFavorite, onClose }: PopupB
             <ul className="space-y-1">
               {restaurant.highlights.map((item) => (
                 <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+                  <span
+                    className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary"
+                    aria-hidden="true"
+                  />
                   <span>{item}</span>
                 </li>
               ))}
@@ -181,7 +210,11 @@ function PopupBody({ restaurant, isFavorite, onToggleFavorite, onClose }: PopupB
         {restaurant.tags && restaurant.tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {restaurant.tags.map((tag) => (
-              <Badge key={tag} variant="secondary" className="gap-1 font-normal text-muted-foreground">
+              <Badge
+                key={tag}
+                variant="secondary"
+                className="gap-1 font-normal text-muted-foreground"
+              >
                 <Tag className="size-3" aria-hidden="true" />
                 {tag}
               </Badge>

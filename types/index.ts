@@ -1,4 +1,4 @@
-export type { Restaurant, PriceRange, RestaurantInput } from './restaurant';
+export type { Restaurant, PriceRange, ImageCredit, RestaurantInput } from './restaurant';
 export {
   restaurantSchema,
   restaurantArraySchema,
