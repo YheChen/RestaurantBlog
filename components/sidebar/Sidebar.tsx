@@ -2,12 +2,14 @@
 
 import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Plus } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { SidebarItem } from '@/components/sidebar/SidebarItem';
+import { SortControl } from '@/components/sidebar/SortControl';
 import { useFilteredRestaurants } from '@/hooks/useFilteredRestaurants';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 import { useAppStore } from '@/store/useAppStore';
@@ -23,6 +25,24 @@ function SidebarHeader({ count }: { count: number }) {
         </Badge>
       </div>
       <p className="text-xs text-muted-foreground">Chen&apos;s picks · downtown Toronto</p>
+    </div>
+  );
+}
+
+function HeaderActions() {
+  const openAddPanel = useAppStore((s) => s.openAddPanel);
+  return (
+    <div className="flex items-center justify-between gap-2 px-3 pb-2">
+      <SortControl />
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-8 gap-1.5 px-2 text-primary hover:text-primary"
+        onClick={openAddPanel}
+      >
+        <Plus className="size-4" aria-hidden="true" />
+        Add
+      </Button>
     </div>
   );
 }
@@ -98,6 +118,7 @@ export function Sidebar() {
               <p className="text-xs text-muted-foreground">Chen&apos;s picks · downtown Toronto</p>
             </div>
           </SheetHeader>
+          <HeaderActions />
           <div className="min-h-0 flex-1">
             <RestaurantList restaurants={restaurants} onClear={clearFilters} />
           </div>
@@ -119,6 +140,7 @@ export function Sidebar() {
           className="glass-panel fixed left-6 top-[88px] bottom-[150px] z-30 flex w-80 flex-col overflow-hidden rounded-2xl border border-border shadow-xl"
         >
           <SidebarHeader count={restaurants.length} />
+          <HeaderActions />
           <div className="min-h-0 flex-1">
             <RestaurantList restaurants={restaurants} onClear={clearFilters} />
           </div>
