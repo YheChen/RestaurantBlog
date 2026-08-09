@@ -57,7 +57,7 @@ export function CarouselCard({ restaurant, index }: CarouselCardProps) {
       )}
     >
       <RestaurantImage
-        src={restaurant.image}
+        src={restaurant.images?.[0] ?? restaurant.image}
         alt={restaurant.name}
         className="h-28 w-full"
         sizes="240px"

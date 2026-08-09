@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { AlertCircle, CheckCircle2, Download, Upload } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Download, RotateCcw, Upload } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -19,9 +19,11 @@ export function ImportExport() {
   const restaurants = useAppStore((s) => s.restaurants);
   const setRestaurants = useAppStore((s) => s.setRestaurants);
   const selectRestaurant = useAppStore((s) => s.selectRestaurant);
+  const resetRestaurants = useAppStore((s) => s.resetRestaurants);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
+  const [confirmReset, setConfirmReset] = useState(false);
 
   // Auto-dismiss the inline status message so it does not linger in the toolbar.
   useEffect(() => {
@@ -106,6 +108,21 @@ export function ImportExport() {
         <TooltipContent>Import JSON</TooltipContent>
       </Tooltip>
 
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Reset to sample data"
+            onClick={() => setConfirmReset(true)}
+            className="rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <RotateCcw className="size-4" aria-hidden="true" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Reset to sample data</TooltipContent>
+      </Tooltip>
+
       <input
         ref={inputRef}
         type="file"
@@ -116,7 +133,38 @@ export function ImportExport() {
       />
 
       <AnimatePresence>
-        {status.kind !== 'idle' ? (
+        {confirmReset ? (
+          <motion.div
+            key="confirm-reset"
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -4 }}
+            transition={{ duration: 0.2 }}
+            className="ml-1 flex items-center gap-1.5 whitespace-nowrap text-xs"
+          >
+            <span className="text-muted-foreground">Reset all places?</span>
+            <Button
+              size="sm"
+              variant="destructive"
+              className="h-6 px-2"
+              onClick={() => {
+                resetRestaurants();
+                setConfirmReset(false);
+                setStatus({ kind: 'success', message: 'Reset to sample data' });
+              }}
+            >
+              Reset
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 px-2"
+              onClick={() => setConfirmReset(false)}
+            >
+              Cancel
+            </Button>
+          </motion.div>
+        ) : status.kind !== 'idle' ? (
           <motion.p
             key={status.message}
             role="status"

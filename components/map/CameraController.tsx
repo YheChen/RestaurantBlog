@@ -15,17 +15,20 @@ import { useAppStore } from '@/store/useAppStore';
 export function CameraController() {
   const selected = useSelectedRestaurant();
   const selectionTick = useAppStore((state) => state.selectionTick);
+  const mapLoaded = useAppStore((state) => state.mapLoaded);
   const flyTo = useFlyTo();
   const isMobile = useIsMobile();
   const lastFlownTick = useRef(0);
 
   useEffect(() => {
-    if (!selected || selectionTick === lastFlownTick.current) return;
+    // Wait for the map before flying so a deep-linked place still gets centered
+    // once the map finishes loading.
+    if (!selected || !mapLoaded || selectionTick === lastFlownTick.current) return;
     lastFlownTick.current = selectionTick;
 
     const offset: [number, number] = isMobile ? [0, -150] : [-200, 0];
     flyTo({ longitude: selected.longitude, latitude: selected.latitude }, { offset });
-  }, [selectionTick, selected, flyTo, isMobile]);
+  }, [selectionTick, selected, flyTo, isMobile, mapLoaded]);
 
   return null;
 }

@@ -17,6 +17,10 @@ export interface Restaurant {
   visitDate?: string;
   tags?: string[];
   image?: string;
+  /** Optional photo gallery; the first image doubles as the cover if `image` is unset. */
+  images?: string[];
+  /** Short "don't miss" bullets (signature dishes, tips) shown in the popup. */
+  highlights?: string[];
   priceRange?: PriceRange;
   neighbourhood?: string;
 }
@@ -41,6 +45,8 @@ export const restaurantSchema = z.object({
   visitDate: z.string().optional(),
   tags: z.array(z.string()).optional(),
   image: z.string().optional(),
+  images: z.array(z.string()).optional(),
+  highlights: z.array(z.string()).optional(),
   priceRange: priceRangeSchema.optional(),
   neighbourhood: z.string().optional(),
 });

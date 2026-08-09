@@ -39,7 +39,10 @@ export function MapView() {
   const theme = useAppStore((state) => state.theme);
   const mapMode = useAppStore((state) => state.mapMode);
   const mapLoaded = useAppStore((state) => state.mapLoaded);
+  const pickingLocation = useAppStore((state) => state.pickingLocation);
+  const userLocation = useAppStore((state) => state.userLocation);
   const filtered = useFilteredRestaurants();
+  const userMarkerRef = useRef<maplibregl.Marker | null>(null);
 
   // Create the map exactly once. Store actions, initial theme, and initial mode
   // are read via getState so this effect never re-runs and re-instantiates it.
@@ -84,10 +87,28 @@ export function MapView() {
       setMapLoaded(true);
     });
 
-    // Clicking the bare map (not a marker) clears the current selection.
-    map.on('click', () => selectRestaurant(null));
+    // Belt-and-suspenders resize handling: some embedded webviews lay the
+    // container out at 0x0 for the first frames, and MapLibre's built-in
+    // tracking can miss the change — leaving a 400x300 canvas in the corner.
+    map.resize();
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => map.resize()) : null;
+    resizeObserver?.observe(containerRef.current);
+
+    // A map click either drops a pin (when picking a location for a new place)
+    // or clears the current selection.
+    map.on('click', (event) => {
+      const state = useAppStore.getState();
+      if (state.pickingLocation) {
+        state.setPickedPoint({ lat: event.lngLat.lat, lng: event.lngLat.lng });
+        state.setPickingLocation(false);
+      } else {
+        selectRestaurant(null);
+      }
+    });
 
     return () => {
+      resizeObserver?.disconnect();
       const { setMap, setMapLoaded } = useAppStore.getState();
       setMapLoaded(false);
       setMap(null);
@@ -118,6 +139,43 @@ export function MapView() {
       map.easeTo({ pitch: INITIAL_CAMERA.pitch, duration: 700, essential: true });
     }
   }, [mapMode, mapLoaded]);
+
+  // Show a crosshair cursor while the user is picking a location on the map.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded) return;
+    map.getCanvas().style.cursor = pickingLocation ? 'crosshair' : '';
+  }, [pickingLocation, mapLoaded]);
+
+  // Render a "you are here" marker whenever a geolocation fix is available.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded) return;
+
+    if (!userLocation) {
+      userMarkerRef.current?.remove();
+      userMarkerRef.current = null;
+      return;
+    }
+
+    if (!userMarkerRef.current) {
+      const el = document.createElement('div');
+      el.className = 'te-user-dot';
+      el.setAttribute('aria-label', 'Your location');
+      el.innerHTML =
+        '<span class="absolute inline-flex h-6 w-6 animate-ping rounded-full bg-sky-400/40"></span>' +
+        '<span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-sky-400 ring-2 ring-background shadow"></span>';
+      el.style.display = 'grid';
+      el.style.placeItems = 'center';
+      userMarkerRef.current = new maplibregl.Marker({ element: el }).setLngLat([
+        userLocation.lng,
+        userLocation.lat,
+      ]);
+      userMarkerRef.current.addTo(map);
+    } else {
+      userMarkerRef.current.setLngLat([userLocation.lng, userLocation.lat]);
+    }
+  }, [userLocation, mapLoaded]);
 
   return (
     <div className="absolute inset-0 h-full w-full">

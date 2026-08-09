@@ -6,6 +6,11 @@ import { TopBar } from '@/components/layout/TopBar';
 import { Sidebar } from '@/components/sidebar/Sidebar';
 import { BottomCarousel } from '@/components/restaurant/BottomCarousel';
 import { RestaurantPopup } from '@/components/restaurant/RestaurantPopup';
+import { AddPlacePanel } from '@/components/place/AddPlacePanel';
+import { MapActions } from '@/components/map/MapActions';
+import { LocationPickBanner } from '@/components/map/LocationPickBanner';
+import { useMounted } from '@/hooks/useMounted';
+import { useDeepLink } from '@/hooks/useDeepLink';
 
 // The map is heavy and touches `window`, so load it on the client only.
 const MapView = dynamic(() => import('@/components/map/MapView').then((mod) => mod.MapView), {
@@ -18,13 +23,25 @@ const MapView = dynamic(() => import('@/components/map/MapView').then((mod) => m
 });
 
 export default function Page() {
+  // Overlays render only after mount so the persisted restaurant list (which may
+  // differ from the seed) never causes a server/client hydration mismatch.
+  const mounted = useMounted();
+  useDeepLink();
+
   return (
     <main className="relative h-dvh w-screen overflow-hidden bg-background">
       <MapView />
-      <TopBar />
-      <Sidebar />
-      <BottomCarousel />
-      <RestaurantPopup />
+      {mounted && (
+        <>
+          <TopBar />
+          <Sidebar />
+          <BottomCarousel />
+          <RestaurantPopup />
+          <AddPlacePanel />
+          <MapActions />
+          <LocationPickBanner />
+        </>
+      )}
     </main>
   );
 }
