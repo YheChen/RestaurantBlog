@@ -59,7 +59,9 @@ export function SortControl() {
                 onClick={() => setSortBy(option.value)}
                 className={cn(
                   'flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50',
-                  active ? 'bg-accent text-accent-foreground' : 'hover:bg-accent hover:text-accent-foreground',
+                  active
+                    ? 'bg-accent text-accent-foreground'
+                    : 'hover:bg-accent hover:text-accent-foreground',
                 )}
               >
                 <span className="flex flex-col">

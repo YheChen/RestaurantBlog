@@ -8,8 +8,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "photos": "node scripts/download-cuisine-photos.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",

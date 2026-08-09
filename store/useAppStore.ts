@@ -122,7 +122,6 @@ export const useAppStore = create<AppState>()(
       theme: 'dark',
       mapMode: '3d',
 
-
       addRestaurant: (restaurant) =>
         set((state) => {
           const existing = state.restaurants.map((item) => item.id);

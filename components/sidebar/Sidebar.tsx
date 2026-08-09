@@ -103,10 +103,7 @@ export function Sidebar() {
   if (isMobile) {
     return (
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <SheetContent
-          side="left"
-          className="flex w-[88vw] flex-col gap-0 p-0 sm:max-w-sm"
-        >
+        <SheetContent side="left" className="flex w-[88vw] flex-col gap-0 p-0 sm:max-w-sm">
           <SheetHeader className="p-0">
             <div className="flex flex-col gap-1 px-4 pb-3 pt-4">
               <div className="flex items-center gap-2">
@@ -137,7 +134,7 @@ export function Sidebar() {
           exit={{ opacity: 0, x: -24 }}
           transition={{ type: 'spring', stiffness: 320, damping: 32 }}
           aria-label="All places"
-          className="glass-panel fixed left-6 top-[88px] bottom-[150px] z-30 flex w-80 flex-col overflow-hidden rounded-2xl border border-border shadow-xl"
+          className="glass-panel fixed bottom-[150px] left-6 top-[88px] z-30 flex w-80 flex-col overflow-hidden rounded-2xl border border-border shadow-xl"
         >
           <SidebarHeader count={restaurants.length} />
           <HeaderActions />

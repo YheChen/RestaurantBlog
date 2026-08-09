@@ -40,11 +40,7 @@ export function BottomCarousel() {
     <div
       className={cn(
         'fixed bottom-5 z-20',
-        isMobile
-          ? 'inset-x-0'
-          : sidebarOpen
-            ? 'inset-x-0 pl-[344px] pr-6'
-            : 'inset-x-0 px-6',
+        isMobile ? 'inset-x-0' : sidebarOpen ? 'inset-x-0 pl-[344px] pr-6' : 'inset-x-0 px-6',
       )}
     >
       <div className={cn('relative flex items-center gap-2', !isMobile && 'mx-auto max-w-5xl')}>

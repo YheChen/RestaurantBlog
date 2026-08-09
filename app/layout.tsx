@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Chen's Toronto Eats",
     description:
-      "A personal 3D map of the restaurants Chen has visited and reviewed across downtown Toronto.",
+      'A personal 3D map of the restaurants Chen has visited and reviewed across downtown Toronto.',
     type: 'website',
   },
 };

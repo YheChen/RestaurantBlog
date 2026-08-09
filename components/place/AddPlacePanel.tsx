@@ -265,7 +265,7 @@ export function AddPlacePanel() {
           className={cn(
             'glass-panel fixed z-40 flex flex-col overflow-hidden border border-border shadow-2xl',
             'inset-x-0 bottom-0 max-h-[88vh] rounded-t-3xl',
-            'md:inset-x-auto md:right-6 md:top-[88px] md:bottom-6 md:w-[360px] md:max-h-none md:rounded-2xl',
+            'md:inset-x-auto md:bottom-6 md:right-6 md:top-[88px] md:max-h-none md:w-[360px] md:rounded-2xl',
           )}
           initial={{ opacity: 0, x: 32, y: '100%' }}
           animate={{ opacity: 1, x: 0, y: 0 }}
@@ -372,11 +372,7 @@ export function AddPlacePanel() {
                   <span className={fieldLabel} id="place-price-label">
                     Price range
                   </span>
-                  <div
-                    className="flex gap-2"
-                    role="group"
-                    aria-labelledby="place-price-label"
-                  >
+                  <div className="flex gap-2" role="group" aria-labelledby="place-price-label">
                     {PRICE_OPTIONS.map((option) => {
                       const active = form.priceRange === option;
                       return (
@@ -386,9 +382,7 @@ export function AddPlacePanel() {
                           variant={active ? 'default' : 'outline'}
                           size="sm"
                           aria-pressed={active}
-                          onClick={() =>
-                            setField('priceRange', active ? null : option)
-                          }
+                          onClick={() => setField('priceRange', active ? null : option)}
                           className="flex-1 rounded-lg focus-visible:ring-offset-background"
                         >
                           {option}
@@ -523,9 +517,7 @@ export function AddPlacePanel() {
                 <div className="mb-3">
                   {confirmingDelete ? (
                     <div className="flex items-center gap-2">
-                      <span className="flex-1 text-sm text-muted-foreground">
-                        Confirm delete?
-                      </span>
+                      <span className="flex-1 text-sm text-muted-foreground">Confirm delete?</span>
                       <Button
                         type="button"
                         variant="destructive"

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useAppStore } from '@/store/useAppStore';
 import { RestaurantImage } from '@/components/restaurant/RestaurantImage';
 import { RatingStars } from '@/components/restaurant/RatingStars';
+import { resolveCoverImage } from '@/lib/restaurant-images';
 import { cn } from '@/lib/utils';
 import type { Restaurant } from '@/types';
 
@@ -57,7 +58,7 @@ export function CarouselCard({ restaurant, index }: CarouselCardProps) {
       )}
     >
       <RestaurantImage
-        src={restaurant.images?.[0] ?? restaurant.image}
+        src={resolveCoverImage(restaurant)}
         alt={restaurant.name}
         className="h-28 w-full"
         sizes="240px"

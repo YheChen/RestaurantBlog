@@ -23,15 +23,16 @@ import { Separator } from '@/components/ui/separator';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
 import { useSelectedRestaurant } from '@/hooks/useFilteredRestaurants';
 import { useIsMobile } from '@/hooks/useMediaQuery';
+import { resolveRestaurantPhotos } from '@/lib/restaurant-images';
 import { cn, formatVisitDate } from '@/lib/utils';
 import { useAppStore } from '@/store/useAppStore';
 import type { Restaurant } from '@/types';
 
 function Gallery({ restaurant }: { restaurant: Restaurant }) {
-  const images = useMemo(() => {
-    if (restaurant.images && restaurant.images.length > 0) return restaurant.images;
-    return restaurant.image ? [restaurant.image] : [];
-  }, [restaurant]);
+  const { images, credit, isStock } = useMemo(
+    () => resolveRestaurantPhotos(restaurant),
+    [restaurant],
+  );
 
   const [active, setActive] = useState(0);
   useEffect(() => setActive(0), [restaurant.id]);
@@ -47,28 +48,35 @@ function Gallery({ restaurant }: { restaurant: Restaurant }) {
           priority
         />
         <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10" />
+        {isStock && (
+          <span
+            className="absolute bottom-2 left-2 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white/90 backdrop-blur-sm"
+            title={`A representative ${restaurant.cuisine} photo, not this restaurant`}
+          >
+            Stock photo
+          </span>
+        )}
       </div>
-      {restaurant.imageCredit && (
+      {credit && (
         <p className="px-0.5 text-[10px] leading-snug text-muted-foreground/80">
           Photo:{' '}
           <a
-            href={restaurant.imageCredit.sourceUrl}
+            href={credit.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-2 hover:text-foreground"
           >
-            {restaurant.imageCredit.author}
+            {credit.author}
           </a>{' '}
           ·{' '}
           <a
-            href={restaurant.imageCredit.licenseUrl}
+            href={credit.licenseUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-2 hover:text-foreground"
           >
-            {restaurant.imageCredit.license}
-          </a>{' '}
-          via Wikimedia Commons
+            {credit.license}
+          </a>
         </p>
       )}
       {images.length > 1 && (
