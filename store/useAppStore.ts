@@ -100,7 +100,7 @@ function toggleInArray(list: string[], value: string): string[] {
  * is what lets a browser holding an older persisted copy pick up the new seed:
  * a version mismatch replaces the stored list (see `migrate` below).
  */
-const SEED_VERSION = 3;
+const SEED_VERSION = 4;
 
 export const useAppStore = create<AppState>()(
   persist(

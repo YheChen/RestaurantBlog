@@ -160,8 +160,7 @@ export const restaurants: Restaurant[] = [
     rating: 5,
     visitDate: '2026-08-09',
     tags: ['lunch'],
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Chinatown_in_Toronto%2C_October_11_2025_%2802%29.jpg/960px-Chinatown_in_Toronto%2C_October_11_2025_%2802%29.jpg',
+    image: '/photos/venue/banh-mi-nguyen-huong.jpg',
     imageCredit: {
       author: 'Dillan Payne',
       license: 'CC BY-SA 4.0',
@@ -198,8 +197,7 @@ export const restaurants: Restaurant[] = [
     rating: 5,
     visitDate: '2026-08-09',
     tags: ['dinner', 'dine in'],
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/House_of_Gourmet_Seafood%2C_BBQ%2C_Noodle_Restaurant_in_Toronto_Chinatown.jpg/960px-House_of_Gourmet_Seafood%2C_BBQ%2C_Noodle_Restaurant_in_Toronto_Chinatown.jpg',
+    image: '/photos/venue/house-of-gourmet.jpg',
     imageCredit: {
       author: 'atallasianguy',
       license: 'CC BY-SA 4.0',
@@ -451,8 +449,7 @@ export const restaurants: Restaurant[] = [
     rating: 4,
     visitDate: '2026-08-09',
     tags: ['take out'],
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Juicy_Dumpling_on_Dundas_in_Toronto%2C_October_11_2025.jpg/960px-Juicy_Dumpling_on_Dundas_in_Toronto%2C_October_11_2025.jpg',
+    image: '/photos/venue/juicy-dumpling.jpg',
     imageCredit: {
       author: 'Dillan Payne',
       license: 'CC BY-SA 4.0',
@@ -490,8 +487,7 @@ export const restaurants: Restaurant[] = [
     rating: 4,
     visitDate: '2026-08-08',
     tags: ['dinner', 'take out'],
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/2/28/The_Burgernator_in_Toronto%27s_Kensington_Market_%289027087953%29.jpg',
+    image: '/photos/venue/the-burgernator.jpg',
     imageCredit: {
       author: 'Jason Baker',
       license: 'CC BY 2.0',
@@ -802,8 +798,7 @@ export const restaurants: Restaurant[] = [
     rating: 4,
     visitDate: '2026-08-08',
     tags: ['dinner', 'take out'],
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Smoke%27s_Poutinerie_Spadina_and_College_2022.jpg/960px-Smoke%27s_Poutinerie_Spadina_and_College_2022.jpg',
+    image: '/photos/venue/smoke-s-poutinerie-spadina.jpg',
     imageCredit: {
       author: 'Xander Wu',
       license: 'CC BY-SA 4.0',
