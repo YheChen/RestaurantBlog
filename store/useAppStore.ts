@@ -40,10 +40,14 @@ interface AppState {
   theme: Theme;
   mapMode: MapMode;
 
+  // Owner mode: gates the add / edit / delete place controls. See lib/owner.ts.
+  isOwner: boolean;
+
   // Data actions
   addRestaurant: (restaurant: Restaurant) => void;
   updateRestaurant: (restaurant: Restaurant) => void;
   removeRestaurant: (id: string) => void;
+  setOwner: (isOwner: boolean) => void;
 
   // Map / selection
   setMap: (map: MapLibreMap | null) => void;
@@ -121,9 +125,11 @@ export const useAppStore = create<AppState>()(
       sidebarOpen: false,
       theme: 'dark',
       mapMode: '3d',
+      isOwner: false,
 
       addRestaurant: (restaurant) =>
         set((state) => {
+          if (!state.isOwner) return {};
           const existing = state.restaurants.map((item) => item.id);
           const id = existing.includes(restaurant.id)
             ? createRestaurantId(restaurant.name, existing)
@@ -140,26 +146,46 @@ export const useAppStore = create<AppState>()(
         }),
 
       updateRestaurant: (restaurant) =>
-        set((state) => ({
-          restaurants: state.restaurants.map((item) =>
-            item.id === restaurant.id ? restaurant : item,
-          ),
-          selectedId: restaurant.id,
-          selectionTick: state.selectionTick + 1,
-          addPanelOpen: false,
-          editingId: null,
-          pickingLocation: false,
-          pickedPoint: null,
-        })),
+        set((state) => {
+          if (!state.isOwner) return {};
+          return {
+            restaurants: state.restaurants.map((item) =>
+              item.id === restaurant.id ? restaurant : item,
+            ),
+            selectedId: restaurant.id,
+            selectionTick: state.selectionTick + 1,
+            addPanelOpen: false,
+            editingId: null,
+            pickingLocation: false,
+            pickedPoint: null,
+          };
+        }),
 
       removeRestaurant: (id) =>
-        set((state) => ({
-          restaurants: state.restaurants.filter((item) => item.id !== id),
-          favorites: state.favorites.filter((favorite) => favorite !== id),
-          selectedId: state.selectedId === id ? null : state.selectedId,
-          addPanelOpen: state.editingId === id ? false : state.addPanelOpen,
-          editingId: state.editingId === id ? null : state.editingId,
-        })),
+        set((state) => {
+          if (!state.isOwner) return {};
+          return {
+            restaurants: state.restaurants.filter((item) => item.id !== id),
+            favorites: state.favorites.filter((favorite) => favorite !== id),
+            selectedId: state.selectedId === id ? null : state.selectedId,
+            addPanelOpen: state.editingId === id ? false : state.addPanelOpen,
+            editingId: state.editingId === id ? null : state.editingId,
+          };
+        }),
+
+      // Locking also dismisses any editor that is already open.
+      setOwner: (isOwner) =>
+        set(
+          isOwner
+            ? { isOwner }
+            : {
+                isOwner,
+                addPanelOpen: false,
+                editingId: null,
+                pickingLocation: false,
+                pickedPoint: null,
+              },
+        ),
 
       setMap: (map) => set({ map }),
       setMapLoaded: (mapLoaded) => set({ mapLoaded }),
@@ -182,9 +208,17 @@ export const useAppStore = create<AppState>()(
       setUserLocation: (userLocation) => set({ userLocation }),
 
       openAddPanel: () =>
-        set({ addPanelOpen: true, editingId: null, selectedId: null, pickedPoint: null }),
+        set((state) =>
+          state.isOwner
+            ? { addPanelOpen: true, editingId: null, selectedId: null, pickedPoint: null }
+            : {},
+        ),
       openEditPanel: (id) =>
-        set({ addPanelOpen: true, editingId: id, selectedId: null, pickedPoint: null }),
+        set((state) =>
+          state.isOwner
+            ? { addPanelOpen: true, editingId: id, selectedId: null, pickedPoint: null }
+            : {},
+        ),
       closeAddPanel: () =>
         set({ addPanelOpen: false, editingId: null, pickingLocation: false, pickedPoint: null }),
       setPickingLocation: (pickingLocation) => set({ pickingLocation }),
@@ -212,6 +246,7 @@ export const useAppStore = create<AppState>()(
         showFavoritesOnly: state.showFavoritesOnly,
         mapMode: state.mapMode,
         sortBy: state.sortBy,
+        isOwner: state.isOwner,
       }),
       // Runs only when the stored version differs from SEED_VERSION: adopt the
       // new seed list and drop favourites pointing at places that no longer exist.
@@ -222,6 +257,7 @@ export const useAppStore = create<AppState>()(
           ...previous,
           restaurants: initialRestaurants,
           favorites: (previous.favorites ?? []).filter((id) => ids.has(id)),
+          isOwner: previous.isOwner ?? false,
         } as AppState;
       },
     },

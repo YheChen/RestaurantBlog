@@ -20,6 +20,7 @@ export function MapActions() {
   const selectedId = useAppStore((s) => s.selectedId);
   const selectRestaurant = useAppStore((s) => s.selectRestaurant);
   const openAddPanel = useAppStore((s) => s.openAddPanel);
+  const isOwner = useAppStore((s) => s.isOwner);
   const setUserLocation = useAppStore((s) => s.setUserLocation);
   const setSortBy = useAppStore((s) => s.setSortBy);
 
@@ -148,22 +149,24 @@ export function MapActions() {
           </TooltipContent>
         </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <motion.div variants={item} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.94 }}>
-              <Button
-                variant="default"
-                size="icon"
-                aria-label="Add a place"
-                onClick={openAddPanel}
-                className="h-12 w-12 rounded-full shadow-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                <Plus className="size-5" aria-hidden="true" />
-              </Button>
-            </motion.div>
-          </TooltipTrigger>
-          <TooltipContent side="left">Add a place</TooltipContent>
-        </Tooltip>
+        {isOwner && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.div variants={item} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.94 }}>
+                <Button
+                  variant="default"
+                  size="icon"
+                  aria-label="Add a place"
+                  onClick={openAddPanel}
+                  className="h-12 w-12 rounded-full shadow-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <Plus className="size-5" aria-hidden="true" />
+                </Button>
+              </motion.div>
+            </TooltipTrigger>
+            <TooltipContent side="left">Add a place</TooltipContent>
+          </Tooltip>
+        )}
       </motion.div>
     </TooltipProvider>
   );

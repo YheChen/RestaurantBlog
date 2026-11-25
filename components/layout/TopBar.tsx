@@ -1,6 +1,7 @@
 'use client';
 
 import { Brand } from './Brand';
+import { OwnerBadge } from './OwnerBadge';
 import { SearchBar } from '@/components/search/SearchBar';
 import { ControlsToolbar } from '@/components/controls/ControlsToolbar';
 
@@ -17,7 +18,8 @@ export function TopBar() {
         <Brand />
       </div>
 
-      <div className="pointer-events-auto order-3 ml-auto sm:order-3 sm:ml-0">
+      <div className="pointer-events-auto order-3 ml-auto flex items-center gap-2 sm:order-3 sm:ml-0">
+        <OwnerBadge />
         <ControlsToolbar />
       </div>
 

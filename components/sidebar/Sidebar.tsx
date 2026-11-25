@@ -31,18 +31,21 @@ function SidebarHeader({ count }: { count: number }) {
 
 function HeaderActions() {
   const openAddPanel = useAppStore((s) => s.openAddPanel);
+  const isOwner = useAppStore((s) => s.isOwner);
   return (
     <div className="flex items-center justify-between gap-2 px-3 pb-2">
       <SortControl />
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-8 gap-1.5 px-2 text-primary hover:text-primary"
-        onClick={openAddPanel}
-      >
-        <Plus className="size-4" aria-hidden="true" />
-        Add
-      </Button>
+      {isOwner && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 gap-1.5 px-2 text-primary hover:text-primary"
+          onClick={openAddPanel}
+        >
+          <Plus className="size-4" aria-hidden="true" />
+          Add
+        </Button>
+      )}
     </div>
   );
 }

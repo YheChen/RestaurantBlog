@@ -29,10 +29,7 @@ import { useAppStore } from '@/store/useAppStore';
 import type { Restaurant } from '@/types';
 
 function Gallery({ restaurant }: { restaurant: Restaurant }) {
-  const { images, credit, isStock } = useMemo(
-    () => resolveRestaurantPhotos(restaurant),
-    [restaurant],
-  );
+  const { images, credit } = useMemo(() => resolveRestaurantPhotos(restaurant), [restaurant]);
 
   const [active, setActive] = useState(0);
   useEffect(() => setActive(0), [restaurant.id]);
@@ -48,14 +45,6 @@ function Gallery({ restaurant }: { restaurant: Restaurant }) {
           priority
         />
         <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10" />
-        {isStock && (
-          <span
-            className="absolute bottom-2 left-2 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white/90 backdrop-blur-sm"
-            title={`A representative ${restaurant.cuisine} photo, not this restaurant`}
-          >
-            Stock photo
-          </span>
-        )}
       </div>
       {credit && (
         <p className="px-0.5 text-[10px] leading-snug text-muted-foreground/80">
@@ -115,6 +104,7 @@ interface PopupBodyProps {
 function PopupBody({ restaurant, isFavorite, onToggleFavorite, onClose }: PopupBodyProps) {
   const openEditPanel = useAppStore((state) => state.openEditPanel);
   const removeRestaurant = useAppStore((state) => state.removeRestaurant);
+  const isOwner = useAppStore((state) => state.isOwner);
 
   const [copied, setCopied] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -258,7 +248,7 @@ function PopupBody({ restaurant, isFavorite, onToggleFavorite, onClose }: PopupB
           </Button>
         </div>
 
-        {confirmDelete ? (
+        {isOwner && confirmDelete ? (
           <div className="flex items-center justify-between gap-2 rounded-xl bg-destructive/10 px-3 py-2 text-sm">
             <span className="text-destructive">Delete this place?</span>
             <div className="flex gap-1.5">
@@ -290,26 +280,28 @@ function PopupBody({ restaurant, isFavorite, onToggleFavorite, onClose }: PopupB
               )}
               {copied ? 'Copied' : 'Share'}
             </Button>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 gap-1.5 px-2"
-                onClick={() => openEditPanel(restaurant.id)}
-              >
-                <Pencil className="size-4" aria-hidden="true" />
-                Edit
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8 text-muted-foreground hover:text-destructive"
-                aria-label="Delete place"
-                onClick={() => setConfirmDelete(true)}
-              >
-                <Trash2 className="size-4" aria-hidden="true" />
-              </Button>
-            </div>
+            {isOwner && (
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 gap-1.5 px-2"
+                  onClick={() => openEditPanel(restaurant.id)}
+                >
+                  <Pencil className="size-4" aria-hidden="true" />
+                  Edit
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 text-muted-foreground hover:text-destructive"
+                  aria-label="Delete place"
+                  onClick={() => setConfirmDelete(true)}
+                >
+                  <Trash2 className="size-4" aria-hidden="true" />
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>

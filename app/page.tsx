@@ -10,7 +10,9 @@ import { AddPlacePanel } from '@/components/place/AddPlacePanel';
 import { MapActions } from '@/components/map/MapActions';
 import { LocationPickBanner } from '@/components/map/LocationPickBanner';
 import { useMounted } from '@/hooks/useMounted';
+import { useAppStore } from '@/store/useAppStore';
 import { useDeepLink } from '@/hooks/useDeepLink';
+import { useOwnerMode } from '@/hooks/useOwnerMode';
 
 // The map is heavy and touches `window`, so load it on the client only.
 const MapView = dynamic(() => import('@/components/map/MapView').then((mod) => mod.MapView), {
@@ -26,7 +28,11 @@ export default function Page() {
   // Overlays render only after mount so the persisted restaurant list (which may
   // differ from the seed) never causes a server/client hydration mismatch.
   const mounted = useMounted();
+  // Must run before useDeepLink so `?owner=` is stripped before the selection
+  // sync rewrites the query string.
+  useOwnerMode();
   useDeepLink();
+  const isOwner = useAppStore((s) => s.isOwner);
 
   return (
     <main className="relative h-dvh w-screen overflow-hidden bg-background">
@@ -37,9 +43,13 @@ export default function Page() {
           <Sidebar />
           <BottomCarousel />
           <RestaurantPopup />
-          <AddPlacePanel />
+          {isOwner && (
+            <>
+              <AddPlacePanel />
+              <LocationPickBanner />
+            </>
+          )}
           <MapActions />
-          <LocationPickBanner />
         </>
       )}
     </main>
