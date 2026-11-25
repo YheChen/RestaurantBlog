@@ -72,7 +72,8 @@ account, no API keys, and no usage costs.
 - **Favourites** — starred places, persisted locally.
 - **Statistics** — total visited, average rating, distinct cuisines, and a top‑cuisines breakdown.
 - **Add / edit / delete places** in the app — set a location by clicking the map, validated with Zod,
-  and persisted locally so changes survive a reload.
+  and persisted locally so changes survive a reload. Hidden behind
+  [owner mode](#owner-mode), since a visitor's edits would only ever touch their own browser.
 - **Dark / light theme** — dark by default, with a smooth toggle (persisted, no flash on load).
 
 ### ♿ Built right
@@ -366,6 +367,22 @@ Deploys to **Vercel** with zero configuration:
 3. Accept the detected **Next.js** defaults and deploy.
 
 No environment variables are required. Any host that supports Next.js works too.
+
+### Owner mode
+
+The add / edit / delete controls are hidden by default. Visit `?owner=1` once to reveal them; the
+setting persists per browser, and the **Owner** pill in the top bar switches it back off. The
+parameter is stripped from the URL on arrival so it never rides along in a copied share link.
+
+To use a less guessable value, set `NEXT_PUBLIC_OWNER_KEY` in the deployment and unlock with
+`?owner=<that value>`.
+
+> [!IMPORTANT]
+> This is a visibility gate, not a security boundary. The site is static with no backend, so every
+> visitor only ever mutates their own `localStorage` copy — nothing they do reaches anyone else, and
+> `NEXT_PUBLIC_*` values are inlined into the client bundle. The gate exists because showing a
+> visitor an "Add a place" button promises something the app cannot deliver, not because there is
+> shared data to protect. Real multi-user editing would need a backend and authentication.
 
 ---
 
