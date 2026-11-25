@@ -238,7 +238,8 @@ npm run dev        # start the dev server → http://localhost:3000
 Every restaurant card shows an image, from one of three sources, tried in this order:
 
 1. **A real photo of the place** on the restaurant record (`image` / `images`). Five of the 74 use
-   freely-licensed Wikimedia Commons shots of the actual storefronts.
+   freely-licensed Wikimedia Commons shots of the actual storefronts, vendored into
+   `public/photos/venue/`.
 2. **A photo of the dish the place is known for**, from
    [`data/dish-photos.ts`](data/dish-photos.ts). Each restaurant is mapped to a dish drawn from its own
    review text — Bun Saigon gets pho, Mother's Dumplings gets dumplings, Tim Hortons gets coffee and
@@ -248,9 +249,9 @@ Every restaurant card shows an image, from one of three sources, tried in this o
    before anyone writes a dish mapping for it.
 
 Within a set, the photo is chosen by hashing the restaurant id, so a given place always gets the same
-image and adjacent cards do not repeat — 49 distinct photos across the 69. Anything from levels 2 or 3
-is badged **Stock photo** in the detail popup, because it is not the restaurant itself. Whatever the
-source, the photo credit and licence are shown beneath it.
+image and adjacent cards do not repeat — 49 distinct photos across the 69. Whatever the source, the
+photo credit and licence are shown beneath it; for the Wikimedia shots that attribution is required by
+the licence.
 
 The resolution logic lives in [`lib/restaurant-images.ts`](lib/restaurant-images.ts), so the UI never
 has to handle a missing image.
@@ -268,8 +269,27 @@ setup. Delete it to go back to hotlinking. No API key or account is needed; the
 [Unsplash Licence](https://unsplash.com/license) permits redistributing the photos as part of your own
 work.
 
-Adding a real photo for a place is just a matter of setting `image` and `imageCredit` on its record in
-[`data/restaurants.ts`](data/restaurants.ts). It will immediately outrank the stock one.
+### Self-hosting the venue photos
+
+```bash
+npm run photos:venue
+```
+
+Reads the venue photo URLs out of [`data/restaurants.ts`](data/restaurants.ts) and vendors them into
+`public/photos/venue/<restaurant-id>.jpg`.
+
+Unlike the stock photos, these **have** to be self-hosted. Commons rate-limits briskly, and a `429`
+leaves a venue photo with nothing to fall back on but the gradient placeholder — there is no stock
+substitute for a photo of a specific storefront. The script retries `429`s with backoff and honours
+`Retry-After`.
+
+Commons only serves thumbnails at a fixed set of widths and answers `400` for anything else: `500`,
+`960` and `1280` work, while `640`, `800`, `900` and `1024` are rejected. The default is `960`.
+
+Adding a real photo for a place means setting `image` and `imageCredit` on its record in
+[`data/restaurants.ts`](data/restaurants.ts), running `npm run photos:venue`, and bumping
+`SEED_VERSION` in [`store/useAppStore.ts`](store/useAppStore.ts) so browsers holding an older copy pick
+up the change. It will immediately outrank the stock photo.
 
 ---
 
